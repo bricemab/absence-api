@@ -1,0 +1,38 @@
+{
+  "name": "absence-api",
+  "version": "0.0.1",
+  "main": "src/server.ts",
+  "description": "",
+  "author": "Brice Mabillard",
+  "browserslist": [
+    "last 1 versions",
+    "not ie <= 11"
+  ],
+  "license": "CC BY-NC-ND 4.0",
+  "scripts": {
+    "dev": "chcp 65001 | nodemon",
+    "build": "babel src --out-dir dist --extensions \".ts, .tsx\" --source-maps inline",
+    "tsc": "tsc",
+    "doc": "typedoc",
+    "eslint": "eslint --cache --format codeframe --ext mjs,ts src --fix"
+  },
+  "dependencies": {
+    "@babel/core": "^7.23.7",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-proposal-decorators": "^7.23.7",
+    "@babel/preset-env": "^7.23.7",
+    "@babel/preset-typescript": "^7.23.3",
+    "axios": "^1.6.3",
+    "babel-core": "^4.7.16",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mariadb": "^3.2.3",
+    "moment": "^2.30.1",
+    "momentjs": "^2.0.0",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.6.5",
+    "qs": "^6.11.2",
+    "winston": "^3.11.0"
+  }
+}

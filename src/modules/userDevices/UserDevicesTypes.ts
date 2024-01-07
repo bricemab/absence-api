@@ -1,0 +1,4 @@
+export enum UserDevicesStatus {
+	DEVICE_ENABLED = "DEVICE_ENABLED",
+	DEVICE_DELETE_BY_USER = "DEVICE_DELETE_BY_USER"
+}
