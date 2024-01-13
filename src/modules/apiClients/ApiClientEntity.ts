@@ -1,8 +1,8 @@
 import Utils from "../../utils/Utils";
 import MysqlAbstractEntity from "../Global/MysqlAbstractEntity";
-import {DataBaseApiClient, DataBaseUser} from "../Global/DatabaseTypes";
+import {DataBaseApiClient} from "../Global/DatabaseTypes";
 import {GeneralErrors} from "../Global/BackendErrors";
-import moment, {Moment} from "moment/moment";
+import dayjs, { Dayjs } from "dayjs";
 
 export default class ApiClientEntity extends MysqlAbstractEntity<boolean> {
     protected tableName = "api_clients";
@@ -10,19 +10,16 @@ export default class ApiClientEntity extends MysqlAbstractEntity<boolean> {
     public key: string;
     public validationKey: string;
     public clientKey: string;
-    public creationDate: Moment;
+    public creationDate: Dayjs;
 
     constructor(
         id: number | null,
         key: string,
         validationKey: string,
         clientKey: string,
-        creationDate: Moment,
+        creationDate: Dayjs,
     ) {
-        super();
-        if (id) {
-            this.id = id as number;
-        }
+        super(id);
         this.key = key;
         this.validationKey = validationKey;
         this.clientKey = clientKey;
@@ -40,7 +37,7 @@ export default class ApiClientEntity extends MysqlAbstractEntity<boolean> {
                             key: this.key,
                             clientKey: this.clientKey,
                             validationKey: this.validationKey,
-                            creationDate: this.creationDate.format("YYYY-MM-DD HH:mm:ss"),
+                            creationDate: Utils.formatDef(this.creationDate),
                         }
                     )
                 );
@@ -54,7 +51,7 @@ export default class ApiClientEntity extends MysqlAbstractEntity<boolean> {
                             key: this.key,
                             clientKey: this.clientKey,
                             validationKey: this.validationKey,
-                            creationDate: this.creationDate.format("YYYY-MM-DD HH:mm:ss"),
+                            creationDate: Utils.formatDef(this.creationDate),
                             id: this.id
                         }
                     )
@@ -94,7 +91,7 @@ export default class ApiClientEntity extends MysqlAbstractEntity<boolean> {
             databaseObject.key,
             databaseObject.validation_key,
             databaseObject.client_key,
-            moment(databaseObject.creation_date),
+            dayjs(databaseObject.creation_date),
         );
         client.existsInDataBase = true;
 
@@ -107,7 +104,7 @@ export default class ApiClientEntity extends MysqlAbstractEntity<boolean> {
             key: this.key,
             validationKey: this.validationKey,
             clientKey: this.clientKey,
-            creationDate: this.creationDate,
+            creationDate: Utils.formatDef(this.creationDate),
         };
     }
 }

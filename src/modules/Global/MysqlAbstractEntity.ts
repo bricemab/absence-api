@@ -10,8 +10,11 @@ export default abstract class MysqlAbstractEntity<
   public id: null | number;
   protected abstract tableName: string;
 
-  protected constructor() {
+  protected constructor(id?: number | null) {
     super();
+    if (id) {
+      this.id = id;
+    }
     this.existsInDataBase = false;
   }
 

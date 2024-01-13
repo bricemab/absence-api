@@ -13,6 +13,10 @@ export interface ApplicationResponse<DataType> {
   error?: ApplicationError;
 }
 
+export type ApplicationResponsePromise<DataType> = Promise<
+  ApplicationResponse<DataType>
+>;
+
 export enum UserClientType {
   API_CLIENT = "API_CLIENT",
   USER = "USER"

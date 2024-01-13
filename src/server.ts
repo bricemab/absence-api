@@ -15,7 +15,6 @@ import Logger from "./utils/Logger";
 import UsersRouter from "./routes/UsersRouter";
 import TokenManager from "./modules/Global/TokenManager";
 
-
 const app = express();
 const setup = async () => {
   Logger.verbose(`Setup started`);

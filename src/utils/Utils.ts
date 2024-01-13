@@ -6,6 +6,7 @@ import util from "util";
 import crypto from "crypto";
 import qs from "qs";
 import config from "../config/config";
+import { Dayjs } from "dayjs";
 
 const buildHmacSha256Signature = (parameters: Object | string) => {
   let dataQueryString = parameters;
@@ -35,6 +36,9 @@ const generateCurrentDateFileName = () => {
 };
 
 export default {
+  formatDef(dayjs: Dayjs): string {
+    return dayjs.format("YYYY-MM-DD HH:mm:ss")
+  },
   validateHmacSha256ValidationKey,
   generateCurrentDateFileName,
   validateHmacSha256Signature,

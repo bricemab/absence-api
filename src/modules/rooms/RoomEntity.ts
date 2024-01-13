@@ -1,22 +1,25 @@
 import Utils from "../../utils/Utils";
 import MysqlAbstractEntity from "../Global/MysqlAbstractEntity";
-import { DataBaseClient } from "../Global/DatabaseTypes";
+import { DatabaseRoom } from "../Global/DatabaseTypes";
 import { GeneralErrors } from "../Global/BackendErrors";
 
-export default class ClientEntity extends MysqlAbstractEntity<boolean> {
-  protected tableName = "clients";
+export default class RoomEntity extends MysqlAbstractEntity<boolean> {
+  protected tableName = "rooms";
 
   public key: string;
   public name: string;
+  public clientId: number;
 
   constructor(
     id: number | null,
     key: string,
-    name: string
+    name: string,
+    clientId: number
   ) {
     super(id);
     this.key = key;
     this.name = name;
+    this.clientId = clientId;
   }
 
   async save() {
@@ -25,10 +28,11 @@ export default class ClientEntity extends MysqlAbstractEntity<boolean> {
       if (!this.existsInDataBase) {
         responseData = await Utils.executeMysqlRequest(
           Utils.getMysqlPool().execute(
-            "INSERT INTO `clients` (`key`, `name`) VALUES (:key, :name)",
+            "INSERT INTO `rooms` (`key`, `name`, `client_id`) VALUES (:key, :name, :clientId)",
             {
               key: this.key,
-              name: this.name
+              name: this.name,
+              clientId: this.clientId
             }
           )
         );
@@ -37,10 +41,11 @@ export default class ClientEntity extends MysqlAbstractEntity<boolean> {
       } else {
         responseData = await Utils.executeMysqlRequest(
           Utils.getMysqlPool().execute(
-            "UPDATE `clients` SET `key`= :key, `name`= :name WHERE `id`= :id",
+            "UPDATE `rooms` SET `key`= :key, `name`= :name, `client_id`=:clientId WHERE `id`= :id",
             {
               key: this.key,
               name: this.name,
+              clientId: this.clientId,
               id: this.id
             }
           )
@@ -58,7 +63,7 @@ export default class ClientEntity extends MysqlAbstractEntity<boolean> {
       return {
         success: true,
         data: {
-          client: this
+          room: this
         }
       };
     } catch (e) {
@@ -74,21 +79,24 @@ export default class ClientEntity extends MysqlAbstractEntity<boolean> {
     }
   }
 
-  static fromDatabaseObject(databaseObject: DataBaseClient) {
-    const user = new ClientEntity(
+  static fromDatabaseObject(databaseObject: DatabaseRoom) {
+    const room = new RoomEntity(
       databaseObject.id,
       databaseObject.key,
-      databaseObject.name
+      databaseObject.name,
+      databaseObject.client_id
     );
-    user.existsInDataBase = true;
+    room.existsInDataBase = true;
 
-    return user;
+    return room;
   }
 
   toJSON(): Object {
     return {
+      id: this.id,
       key: this.key,
-      name: this.name
+      name: this.name,
+      clientId: this.clientId
     };
   }
 }

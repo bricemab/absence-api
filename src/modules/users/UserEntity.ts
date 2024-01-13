@@ -2,29 +2,31 @@ import Utils from "../../utils/Utils";
 import MysqlAbstractEntity from "../Global/MysqlAbstractEntity";
 import {DataBaseUser} from "../Global/DatabaseTypes";
 import {GeneralErrors} from "../Global/BackendErrors";
-import {UserRole} from "./UserRole";
-import moment, {Moment} from "moment/moment";
+import dayjs, { Dayjs } from "dayjs";
 
 export default class UserEntity extends MysqlAbstractEntity<boolean> {
     protected tableName = "users";
 
     public key: string;
-    public serviceKey: string;
-    public creationDate: Moment;
+    public clientKey: string;
+    public creationDate: Dayjs;
+    public activationDate: Dayjs | null;
+    public isActive: boolean
 
     constructor(
         id: number | null,
         key: string,
-        serviceKey: string,
-        creationDate: Moment,
+        clientKey: string,
+        creationDate: Dayjs,
+        activationDate: Dayjs | null,
+        isActive: boolean
     ) {
-        super();
-        if (id) {
-            this.id = id as number;
-        }
+        super(id);
         this.key = key;
-        this.serviceKey = serviceKey;
+        this.clientKey = clientKey;
         this.creationDate = creationDate;
+        this.activationDate = activationDate;
+        this.isActive = isActive;
     }
 
     async save() {
@@ -33,12 +35,14 @@ export default class UserEntity extends MysqlAbstractEntity<boolean> {
             if (!this.existsInDataBase) {
                 responseData = await Utils.executeMysqlRequest(
                     Utils.getMysqlPool().execute(
-                        "INSERT INTO `users` (`key`, `service_key`, `creation_date`) VALUES (?, ?, ?)",
-                        [
-                            this.key,
-                            this.serviceKey,
-                            this.creationDate.format("YYYY-MM-DD HH:mm:ss"),
-                        ]
+                        "INSERT INTO `users` (`key`, `client_key`, `creation_date`, `activation_date`, `is_active`) VALUES (:key, :clientKey, :creationDate, :activationDate, :isActive)",
+                      {
+                        key: this.key,
+                        clientKey: this.clientKey,
+                        creationDate: Utils.formatDef(this.creationDate),
+                        activationDate: this.activationDate ? Utils.formatDef(this.activationDate) : null,
+                        isActive: this.isActive ? "1" : "0",
+                      }
                     )
                 );
 
@@ -46,11 +50,13 @@ export default class UserEntity extends MysqlAbstractEntity<boolean> {
             } else {
                 responseData = await Utils.executeMysqlRequest(
                     Utils.getMysqlPool().execute(
-                        "UPDATE `users` SET `key`= :key, `service_key`= :serviceKey, `creation_date`=:creationDate WHERE `id`= :id",
+                        "UPDATE `users` SET `key`= :key, `client_key`= :clientKey, `creation_date`=:creationDate, `activation_date`=: WHERE `id`= :id",
                         {
-                            key: this.key,
-                            serviceKey: this.serviceKey,
-                            creationDate: this.creationDate.format("YYYY-MM-DD HH:mm:ss"),
+                          key: this.key,
+                          clientKey: this.clientKey,
+                          creationDate: Utils.formatDef(this.creationDate),
+                          activationDate: this.activationDate ? Utils.formatDef(this.activationDate) : null,
+                          isActive: this.isActive ? "1" : "0",
                             id: this.id
                         }
                     )
@@ -88,8 +94,10 @@ export default class UserEntity extends MysqlAbstractEntity<boolean> {
         const user = new UserEntity(
             databaseObject.id,
             databaseObject.key,
-            databaseObject.service_key,
-            moment(databaseObject.creation_date),
+            databaseObject.client_key,
+            dayjs(databaseObject.creation_date),
+            databaseObject.activation_date ? dayjs(databaseObject.activation_date) : null,
+          databaseObject.is_active === 1
         );
         user.existsInDataBase = true;
 
@@ -99,9 +107,11 @@ export default class UserEntity extends MysqlAbstractEntity<boolean> {
     toJSON(): Object {
         return {
             id: this.id,
-            key: this.key,
-            serviceKey: this.serviceKey,
-            creationDate: this.creationDate,
+          key: this.key,
+          clientKey: this.clientKey,
+          creationDate: Utils.formatDef(this.creationDate),
+          activationDate: this.activationDate ? Utils.formatDef(this.activationDate) : null,
+          isActive: this.isActive,
         };
     }
 }

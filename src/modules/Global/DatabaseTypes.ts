@@ -45,7 +45,8 @@ export interface DatabaseScannerLog {
 export interface DatabaseUserDevice {
     id: number;
     user_key: string;
-    validation_key: string;
+    key: string;
+    client_key: string;
     brand: string | null;
     model: string | null;
     os: string | null;
