@@ -18,6 +18,7 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
   public status: UserDevicesStatus;
   public creationDate: Dayjs;
   public keyExpirationDate: Dayjs;
+  public activationDate: Dayjs | null;
   public hasBeenProcess: boolean;
 
   constructor(
@@ -32,10 +33,12 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
     status: UserDevicesStatus,
     creationDate: Dayjs,
     keyExpirationDate: Dayjs,
+    activationDate: Dayjs | null,
     hasBeenProcess: boolean
   ) {
     super(id);
     this.userKey = userKey;
+    this.key = key;
     this.clientKey = clientKey;
     this.brand = brand;
     this.model = model;
@@ -44,6 +47,7 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
     this.status = status;
     this.creationDate = creationDate;
     this.keyExpirationDate = keyExpirationDate;
+    this.activationDate = activationDate;
     this.hasBeenProcess = hasBeenProcess;
   }
 
@@ -53,9 +57,10 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
       if (!this.existsInDataBase) {
         responseData = await Utils.executeMysqlRequest(
           Utils.getMysqlPool().execute(
-            "INSERT INTO `user_devices` (`user_key`, `key`, `client_key`, `brand`, `model`, `os`, `version`, `status`, `creation_date`, `key_expiration_date`, `has_been_process`) VALUES (:userKey, :key, :clientKey, :brand, :model, :os, :version, :status, :creationDate, :keyExpirationDate, :hasBeenProcess)",
+            "INSERT INTO `user_devices` (`user_key`, `key`, `client_key`, `brand`, `model`, `os`, `version`, `status`, `creation_date`, `key_expiration_date`, `activation_date`, `has_been_process`) VALUES (:userKey, :key, :clientKey, :brand, :model, :os, :version, :status, :creationDate, :keyExpirationDate, :activationDate, :hasBeenProcess)",
             {
               userKey: this.userKey,
+              key: this.key,
               clientKey: this.clientKey,
               brand: this.brand,
               model: this.model,
@@ -64,7 +69,8 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
               status: this.status,
               creationDate: Utils.formatDef(this.creationDate),
               keyExpirationDate: Utils.formatDef(this.keyExpirationDate),
-              hasBeenProcess: this.hasBeenProcess,
+              activationDate: this.activationDate ? Utils.formatDef(this.activationDate) : null,
+              hasBeenProcess: this.hasBeenProcess ? 1 : 0,
             }
           )
         );
@@ -73,9 +79,10 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
       } else {
         responseData = await Utils.executeMysqlRequest(
           Utils.getMysqlPool().execute(
-            "UPDATE `user_devices` SET `user_key`=:userKey, `key`=:key, `client_key`=:clientKey, `brand`=:brand, `model`=:model, `os`=:os, `version`=:version, `status`=:status, `creation_date`=:creationDate, `key_expiration_date`=:keyExpirationDate, `has_been_process`=:hasBeenProcess WHERE `id`= :id",
+            "UPDATE `user_devices` SET `user_key`=:userKey, `key`=:key, `client_key`=:clientKey, `brand`=:brand, `model`=:model, `os`=:os, `version`=:version, `status`=:status, `creation_date`=:creationDate, `key_expiration_date`=:keyExpirationDate, `activation_date`=:activationDate, `has_been_process`=:hasBeenProcess WHERE `id`= :id",
             {
               userKey: this.userKey,
+              key: this.key,
               clientKey: this.clientKey,
               brand: this.brand,
               model: this.model,
@@ -84,7 +91,8 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
               status: this.status,
               creationDate: Utils.formatDef(this.creationDate),
               keyExpirationDate: Utils.formatDef(this.keyExpirationDate),
-              hasBeenProcess: this.hasBeenProcess,
+              activationDate: this.activationDate ? Utils.formatDef(this.activationDate) : null,
+              hasBeenProcess: this.hasBeenProcess ? 1 : 0,
               id: this.id
             }
           )
@@ -119,7 +127,7 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
   }
 
   static fromDatabaseObject(databaseObject: DatabaseUserDevice) {
-    const room = new UserDeviceEntity(
+    const device = new UserDeviceEntity(
       databaseObject.id,
       databaseObject.user_key,
       databaseObject.key,
@@ -131,11 +139,12 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
       databaseObject.status,
       dayjs(databaseObject.creation_date),
       dayjs(databaseObject.key_expiration_date),
+      databaseObject.activation_date ? dayjs(databaseObject.activation_date) : null,
       databaseObject.has_been_process === 1,
     );
-    room.existsInDataBase = true;
+    device.existsInDataBase = true;
 
-    return room;
+    return device;
   }
 
   toJSON(): Object {

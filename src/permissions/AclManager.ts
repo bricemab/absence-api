@@ -1,5 +1,5 @@
 import {Request, request} from "express";
-import {ApplicationRequest, UserApiClientSession} from "../utils/Types";
+import {ApplicationRequest, TokenRequestSession} from "../utils/Types";
 import {Permissions} from "./permissions";
 import RequestManager from "../modules/Global/RequestManager";
 import {AuthenticationErrors} from "../modules/Global/BackendErrors";
@@ -31,7 +31,7 @@ export default class AclManager {
     }
   }
 
-  public static hasUserAccessPermission(permission: string, tokenDecryptedData?: UserApiClientSession) {
+  public static hasUserAccessPermission(permission: string, tokenDecryptedData?: TokenRequestSession) {
     let hasPermission = false;
     if (!tokenDecryptedData) return false;
     const userRole = tokenDecryptedData.role ?? UserRole.USER_ANONYMOUS;

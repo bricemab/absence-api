@@ -1,6 +1,6 @@
 import {ScannerLogsType} from "../scannerLogs/ScannerLogsType";
 import {UserDevicesStatus} from "../userDevices/UserDevicesTypes";
-import {LogsType} from "../logs/logsType";
+import { ActionLogTypes } from "../logs/logsType";
 
 export interface DataBaseApiClient {
     id: number;
@@ -18,9 +18,10 @@ export interface DataBaseClient {
 
 export interface DatabaseLog {
     id: number;
-    action: LogsType;
+    action: ActionLogTypes;
     date: string;
     user_key: string;
+    device_key: string;
     client_key: string;
     api_client_id: number;
 }
@@ -54,6 +55,7 @@ export interface DatabaseUserDevice {
     status: UserDevicesStatus;
     creation_date: string;
     key_expiration_date: string;
+    activation_date: string | null;
     has_been_process: number;
 }
 

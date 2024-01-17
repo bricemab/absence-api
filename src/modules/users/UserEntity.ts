@@ -3,6 +3,7 @@ import MysqlAbstractEntity from "../Global/MysqlAbstractEntity";
 import {DataBaseUser} from "../Global/DatabaseTypes";
 import {GeneralErrors} from "../Global/BackendErrors";
 import dayjs, { Dayjs } from "dayjs";
+import { ApplicationError } from "../../utils/Types";
 
 export default class UserEntity extends MysqlAbstractEntity<boolean> {
     protected tableName = "users";
@@ -50,14 +51,14 @@ export default class UserEntity extends MysqlAbstractEntity<boolean> {
             } else {
                 responseData = await Utils.executeMysqlRequest(
                     Utils.getMysqlPool().execute(
-                        "UPDATE `users` SET `key`= :key, `client_key`= :clientKey, `creation_date`=:creationDate, `activation_date`=: WHERE `id`= :id",
+                        "UPDATE `users` SET `key`= :key, `client_key`= :clientKey, `creation_date`=:creationDate, `activation_date`=:activationDate, `is_active`=:isActive WHERE `id`= :id",
                         {
                           key: this.key,
                           clientKey: this.clientKey,
                           creationDate: Utils.formatDef(this.creationDate),
                           activationDate: this.activationDate ? Utils.formatDef(this.activationDate) : null,
                           isActive: this.isActive ? "1" : "0",
-                            id: this.id
+                          id: this.id
                         }
                     )
                 );

@@ -11,14 +11,16 @@ export default class LogEntity extends MysqlAbstractEntity<boolean> {
   public action: ActionLogTypes;
   public date: Dayjs;
   public userKey: string | null;
+  public deviceKey: string | null;
   public clientKey: string | null;
   public apiClientId: number | null;
 
   constructor(
-    id: number,
+    id: number | null,
     action: ActionLogTypes,
     date: Dayjs,
     userKey: string | null,
+    deviceKey: string | null,
     clientKey: string | null,
     apiClientId: number | null
   ) {
@@ -26,6 +28,7 @@ export default class LogEntity extends MysqlAbstractEntity<boolean> {
     this.action = action;
     this.date = date;
     this.userKey = userKey;
+    this.deviceKey = deviceKey;
     this.clientKey = clientKey;
     this.apiClientId = apiClientId;
   }
@@ -36,11 +39,12 @@ export default class LogEntity extends MysqlAbstractEntity<boolean> {
       if (!this.existsInDataBase) {
         responseData = await Utils.executeMysqlRequest(
           Utils.getMysqlPool().execute(
-            "INSERT INTO `logs` (`action`, `date`, `user_key`, `client_key`, `api_client_id`) VALUES (:action, :date, :userKey, :clientKey, :apiClientId)",
+            "INSERT INTO `logs` (`action`, `date`, `user_key`, `device_key`, `client_key`, `api_client_id`) VALUES (:action, :date, :userKey, :deviceKey, :clientKey, :apiClientId)",
             {
-              key: this.action,
+              action: this.action,
               date: Utils.formatDef(this.date),
               userKey: this.userKey,
+              deviceKey: this.deviceKey,
               clientKey: this.clientKey,
               apiClientId: this.apiClientId
             }
@@ -51,11 +55,12 @@ export default class LogEntity extends MysqlAbstractEntity<boolean> {
       } else {
         responseData = await Utils.executeMysqlRequest(
           Utils.getMysqlPool().execute(
-            "UPDATE `logs` SET `action`= :action, `date`= :date, `user_key`=:userKey, `client_key`=:clientKey, `api_client_id`=:apiClientId,  WHERE `id`= :id",
+            "UPDATE `logs` SET `action`= :action, `date`= :date, `user_key`=:userKey, `device_key`=:deviceKey, `client_key`=:clientKey, `api_client_id`=:apiClientId,  WHERE `id`= :id",
             {
-              key: this.action,
+              action: this.action,
               date: Utils.formatDef(this.date),
               userKey: this.userKey,
+              deviceKey: this.deviceKey,
               clientKey: this.clientKey,
               apiClientId: this.apiClientId,
               id: this.id
@@ -97,6 +102,7 @@ export default class LogEntity extends MysqlAbstractEntity<boolean> {
       databaseObject.action,
       dayjs(databaseObject.date),
       databaseObject.user_key,
+      databaseObject.device_key,
       databaseObject.client_key,
       databaseObject.api_client_id
     );

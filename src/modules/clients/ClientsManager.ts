@@ -1,5 +1,5 @@
 import Utils from "../../utils/Utils";
-import {DataBaseService, DataBaseUser} from "../Global/DatabaseTypes";
+import {DataBaseClient, DataBaseUser} from "../Global/DatabaseTypes";
 import {GeneralErrors} from "../Global/BackendErrors";
 import UserEntity from "../users/UserEntity";
 import ClientEntity from "./ClientEntity";
@@ -7,7 +7,7 @@ import ClientEntity from "./ClientEntity";
 export default class ClientsManager {
     static async findByKey(key: string) {
         const serviceFromDatabase = Utils.castMysqlRecordToObject<
-            DataBaseService
+          DataBaseClient
         >(await Utils.getMysqlPool().execute("SELECT * FROM clients WHERE `key` = :key", {
             key
         }));
@@ -26,7 +26,7 @@ export default class ClientsManager {
         return {
             success: true,
             data: {
-                service: ClientEntity.fromDatabaseObject(serviceFromDatabase)
+                client: ClientEntity.fromDatabaseObject(serviceFromDatabase)
             }
         };
     }

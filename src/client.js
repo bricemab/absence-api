@@ -20,8 +20,8 @@ const instance = axios.create({
 	baseURL: "http://localhost:5000/",
 	headers: {
 		"x-access-token": "MAReTqRkP9D5g4BQ3gARz6HhU6h2Gsd8HMHfqXjFpf8Xhf3VA2",
-		"x-api-client-token": "test",
-		"x-validation-token": "83541740c5804c084cc123d4b7e08037920beb87fc45f352341fba4710978829",
+		"x-api-client-token": "asdfASDFI234",
+		"x-validation-token": "439c6cb53fb4dd65cd286c0ca080a29aa56277e59b379a017915a1e51cbb321d",
 	},
 });
 
@@ -38,7 +38,7 @@ console.log(data);
 
 
 instance
-	.post("/users/registration", data)
+	.post("/api/users/new-user", data)
 	.then((response) => {
 		const { status, data } = response;
 		console.log(response.data)

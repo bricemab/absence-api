@@ -12,7 +12,17 @@ export enum GeneralErrors {
   UNVALID_FILE_PATH = "UNVALID_FILE_PATH",
   INVALID_SERVICE = "INVALID_SERVICE",
   KEY_EXPIRATION = "KEY_EXPIRATION",
-  ALREADY_EXIST = "ALREADY_EXIST"
+  ALREADY_EXIST = "ALREADY_EXIST",
+  PAGE_NOT_EXIST = "PAGE_NOT_EXIST",
+}
+
+export enum UserErrors {
+  KEY_NO_MATCH = "KEY_NO_MATCH",
+  KEY_HAS_EXPIRED = "KEY_HAS_EXPIRED",
+}
+
+export enum ApiClientErrors {
+  KEYS_NOT_MATCH = "KEYS_NOT_MATCH"
 }
 
 export enum AuthenticationErrors {

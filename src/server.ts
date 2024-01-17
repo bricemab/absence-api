@@ -12,8 +12,12 @@ import config from "./config/config";
 import Utils from "./utils/Utils";
 import GlobalStore from "./utils/GlobalStore";
 import Logger from "./utils/Logger";
-import UsersRouter from "./routes/UsersRouter";
+import AppUsersRouter from "./routes/app/UsersRouter";
+import ApiUsersRouter from "./routes/api/UsersRouter";
 import TokenManager from "./modules/Global/TokenManager";
+import RequestManager from "./modules/Global/RequestManager";
+import { ApplicationRequest } from "./utils/Types";
+import { GeneralErrors } from "./modules/Global/BackendErrors";
 
 const app = express();
 const setup = async () => {
@@ -66,12 +70,27 @@ setup().then(() => {
   Logger.verbose(`Setup end`);
   Logger.verbose(`Binding routes`);
 
-  app.use("/users", UsersRouter);
+  app.use("/users", AppUsersRouter);
+  app.use("/api/users", ApiUsersRouter);
   app.get("*", (req: Request, res: Response) => {
-    res.json({state: "Page dont exist"});
+    res.status(404);
+    res.json({
+      success: false,
+      error: {
+        code: GeneralErrors.PAGE_NOT_EXIST,
+        message: "The user couldn't be found in database",
+      }
+    });
   });
   app.post("*", (req: Request, res: Response) => {
-    res.json({state: "Page dont exist"});
+    res.status(404);
+    res.json({
+      success: false,
+      error: {
+        code: GeneralErrors.PAGE_NOT_EXIST,
+        message: "This page doesn't exist",
+      }
+    });
   });
 
   Logger.verbose(`Server starting`);

@@ -1,6 +1,6 @@
 export interface LogsType {
 }
 
-export interface ActionLogTypes {
-
+export enum ActionLogTypes {
+  USER_NEW = "USER_NEW"
 }

@@ -59,4 +59,4 @@ typings/
 .env
 .idea/
 /dist/*
-/src/config/config.ts
+#/src/config/config.ts
