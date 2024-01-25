@@ -44,11 +44,11 @@ UsersRouter.post(
         });
       }
       if (!request.body.data ||
-        !request.body.data.key ||
-        !request.body.data.brand ||
-        !request.body.data.model ||
-        !request.body.data.version ||
-        !request.body.data.os
+        !request.body.data.key
+        // !request.body.data.brand ||
+        // !request.body.data.model ||
+        // !request.body.data.version ||
+        // !request.body.data.os
       ) {
         return RequestManager.sendResponse(response, {
           success: false,
@@ -61,6 +61,7 @@ UsersRouter.post(
       const { version, os, key: deviceKey, model , brand } = request.body.data!;
       const deviceUserResponse = await UserDevicesManager.findByKey(deviceKey);
       if (!deviceUserResponse.success && !deviceUserResponse.data) {
+        await Utils.awaitTimeout(3000);
         return RequestManager.sendResponse(response, {
           success: false,
           error: {

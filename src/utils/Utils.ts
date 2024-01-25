@@ -82,4 +82,7 @@ export default {
     const [results, other]: [ResultSetHeader, any] = await fn;
     return results;
   },
+  async awaitTimeout(time: number) {
+    return new Promise(resolve => {setTimeout(resolve, time);})
+  }
 }
