@@ -35,7 +35,7 @@ export default class RequestManager {
    * Parameter: status - Code status à mettre dans le header HTTP.
    */
   static sendResponse(
-    response: Response,
+    response: any,
     dataToSend: ApplicationResponse<any>,
     status?: number
   ) {

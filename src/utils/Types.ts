@@ -58,6 +58,7 @@ export interface UserSession {
   id: number;
   key: string;
   clientKey: string;
+  deviceKey: string;
   creationDate: Dayjs;
   activationDate: Dayjs | null;
   isActive: boolean;
@@ -113,4 +114,8 @@ export interface ApplicationRequest<BodyData> extends Request {
     "x-scanner-token"?: string;
     "x-room-token"?: string;
   };
+}
+
+export enum FirebaseNotificationCode {
+  REMOVE_DEVICE = "REMOVE_DEVICE"
 }

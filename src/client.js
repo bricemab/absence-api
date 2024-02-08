@@ -30,7 +30,21 @@ const instance = axios.create({
 // 	token: ""
 // }
 const data = {
-	data: {},
+	data: {
+    userKey: "G7gvpRV33zACrgAwDf84U5BXAX3hG1bD82lz4FQEBuycCNr1gq",
+    name: "Cerificat de test",
+    fromDate: "2024-01-01",
+    toDate: "2024-05-05",
+    timeslots: [{
+      weekDay: 2,
+      startHours: "12:00",
+      endHours: "14:00"
+    },{
+      weekDay: 4,
+      startHours: "10:00",
+      endHours: "12:00"
+    }]
+  },
 	token: ""
 }
 data.token = buildHmacSha256Signature(data.data);
@@ -38,7 +52,7 @@ console.log(data);
 
 
 instance
-	.post("/api/users/new-user", data)
+	.post("/api/certificates/new-certificate", data)
 	.then((response) => {
 		const { status, data } = response;
 		console.log(response.data)

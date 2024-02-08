@@ -2,8 +2,8 @@ import { Router } from "express";
 import AclManager from "../../permissions/AclManager";
 import { Permissions } from "../../permissions/permissions";
 import RequestManager from "../../modules/Global/RequestManager";
-import { ApplicationRequest, ClientApiSession } from "../../utils/Types";
-import { AuthenticationErrors } from "../../modules/Global/BackendErrors";
+import { ApplicationRequest, ClientApiSession, UserSession } from "../../utils/Types";
+import { AuthenticationErrors, GeneralErrors } from "../../modules/Global/BackendErrors";
 import Utils from "../../utils/Utils";
 import UserEntity from "../../modules/users/UserEntity";
 import dayjs from "dayjs";
@@ -11,6 +11,8 @@ import UserDeviceEntity from "../../modules/userDevices/UserDeviceEntity";
 import { UserDevicesStatus } from "../../modules/userDevices/UserDevicesTypes";
 import LogEntity from "../../modules/logs/LogEntity";
 import { ActionLogTypes } from "../../modules/logs/logsType";
+import CertificateEntity from "../../modules/certificates/CertificateEntity";
+import CertificateTimeslotEntity from "../../modules/certificateTimeslots/CertificateTimeslotEntity";
 
 const UsersRouter = Router();
 
@@ -29,7 +31,7 @@ UsersRouter.post(
         return RequestManager.sendResponse(response, {
           success: false,
           error: {
-            code: AuthenticationErrors.AUTH_MUST_BE_LOGGED_ON,
+            code: AuthenticationErrors.AUTH_MUST_BE_LOGGED_IN,
             message: "You must be logged on"
           }
         });
@@ -45,6 +47,7 @@ UsersRouter.post(
         userKey,
         deviceKey,
         client.key,
+        null,
         null,
         null,
         null,
@@ -82,58 +85,30 @@ UsersRouter.post(
       }>,
       response: Response
     ) => {
-      // if (request.isLogged) {
-      //     return RequestManager.sendResponse(response, {
-      //         success: false,
-      //         error: {
-      //             code: AuthenticationErrors.AUTH_MUST_BE_LOGGED_OFF,
-      //             message: "You must be logged off"
-      //         }
-      //     });
-      // }
-      //
-      // if (request.body.data && !request.body.data.authKey) {
-      //     return RequestManager.sendResponse(response, {
-      //         success: false,
-      //         error: {
-      //             code: GeneralErrors.INVALID_REQUEST,
-      //             message: "Request mal formatted"
-      //         }
-      //     });
-      // }
-      // const { authKey } = request.body.data!;
-      // const authUserResponse = await UserAuthsManager.findByAuthKey(authKey);
-      // if (!authUserResponse.success && !authUserResponse.data) {
-      //     return RequestManager.sendResponse(response, authUserResponse);
-      // }
-      // const { userAuth } = authUserResponse.data!;
-      // if (moment().format("YYYY-MM-DD HH:mm:ss") > userAuth.expirationDate.format("YYYY-MM-DD HH:mm:ss")) {
-      //     return RequestManager.sendResponse(response, {
-      //         success: false,
-      //         error: {
-      //             code: GeneralErrors.KEY_EXPIRATION,
-      //             message: "Key has expire"
-      //         }
-      //     });
-      // }
-      // if (userAuth.authKey !== authKey || userAuth.hasBeenProcess) {
-      //     return RequestManager.sendResponse(response, {
-      //         success: false,
-      //         error: {
-      //             code: GeneralErrors.KEY_EXPIRATION,
-      //             message: "Key is not valid"
-      //         }
-      //     });
-      // }
-      // userAuth.hasBeenProcess = true;
-      // await userAuth.save();
-      //
-      // RequestManager.sendResponse(response, {
-      //     success: true,
-      //     data: {
-      //         userKey: userAuth.userKey
-      //     }
-      // })
+      if (!request.isLogged) {
+        return RequestManager.sendResponse(response, {
+          success: false,
+          error: {
+            code: AuthenticationErrors.AUTH_MUST_BE_LOGGED_IN,
+            message: "You must be logged in"
+          }
+        });
+      }
+
+      if (request.body.data && !request.body.data.authKey) {
+        return RequestManager.sendResponse(response, {
+          success: false,
+          error: {
+            code: GeneralErrors.INVALID_REQUEST,
+            message: "Request mal formatted"
+          }
+        });
+      }
+      const { authKey } = request.body.data!;
+      RequestManager.sendResponse(response, {
+        success: true,
+        data: {}
+      });
     })
 );
 

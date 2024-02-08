@@ -1,0 +1,6 @@
+ - push 1 semaine avant la fin du certificat pour dire qu il faut retourner en cours
+OK - faire un loader qui se lance sur l appli quand on arrive sur la page de HomeScreen quand on a la co internet
+OK - enregistrer le certificates dans le localstorage et le charger a partir de la si on a pas la connexion
+OK - faire l'algo pour generer les qrcode
+ - mettre un bandeau pour dire qu'on est pas connecté a internet
+

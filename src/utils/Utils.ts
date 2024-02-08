@@ -61,6 +61,10 @@ export default {
       return rows[0];
     }
   },
+  validateTimeHHmm(time: string): boolean {
+    const regex = /^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$/;
+    return regex.test(time);
+  },
   castMysqlRecordToObject<ResultsType>(rows: any): ResultsType | undefined {
     const [data] = rows;
     if (Array.isArray(data)) {

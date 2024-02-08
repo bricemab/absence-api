@@ -15,6 +15,7 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
   public model: string | null;
   public os: string | null;
   public version: string | null;
+  public apnsToken: string | null;
   public status: UserDevicesStatus;
   public creationDate: Dayjs;
   public keyExpirationDate: Dayjs;
@@ -30,6 +31,7 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
     model: string | null,
     os: string | null,
     version: string | null,
+    apnsToken: string | null,
     status: UserDevicesStatus,
     creationDate: Dayjs,
     keyExpirationDate: Dayjs,
@@ -44,6 +46,7 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
     this.model = model;
     this.os = os;
     this.version = version;
+    this.apnsToken = apnsToken;
     this.status = status;
     this.creationDate = creationDate;
     this.keyExpirationDate = keyExpirationDate;
@@ -57,7 +60,7 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
       if (!this.existsInDataBase) {
         responseData = await Utils.executeMysqlRequest(
           Utils.getMysqlPool().execute(
-            "INSERT INTO `user_devices` (`user_key`, `key`, `client_key`, `brand`, `model`, `os`, `version`, `status`, `creation_date`, `key_expiration_date`, `activation_date`, `has_been_process`) VALUES (:userKey, :key, :clientKey, :brand, :model, :os, :version, :status, :creationDate, :keyExpirationDate, :activationDate, :hasBeenProcess)",
+            "INSERT INTO `user_devices` (`user_key`, `key`, `client_key`, `brand`, `model`, `os`, `version`, `apns_token`, `status`, `creation_date`, `key_expiration_date`, `activation_date`, `has_been_process`) VALUES (:userKey, :key, :clientKey, :brand, :model, :os, :version, :apnsToken, :status, :creationDate, :keyExpirationDate, :activationDate, :hasBeenProcess)",
             {
               userKey: this.userKey,
               key: this.key,
@@ -66,6 +69,7 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
               model: this.model,
               os: this.os,
               version: this.version,
+              apnsToken: this.apnsToken,
               status: this.status,
               creationDate: Utils.formatDef(this.creationDate),
               keyExpirationDate: Utils.formatDef(this.keyExpirationDate),
@@ -79,7 +83,7 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
       } else {
         responseData = await Utils.executeMysqlRequest(
           Utils.getMysqlPool().execute(
-            "UPDATE `user_devices` SET `user_key`=:userKey, `key`=:key, `client_key`=:clientKey, `brand`=:brand, `model`=:model, `os`=:os, `version`=:version, `status`=:status, `creation_date`=:creationDate, `key_expiration_date`=:keyExpirationDate, `activation_date`=:activationDate, `has_been_process`=:hasBeenProcess WHERE `id`= :id",
+            "UPDATE `user_devices` SET `user_key`=:userKey, `key`=:key, `client_key`=:clientKey, `brand`=:brand, `model`=:model, `os`=:os, `version`=:version, `apns_token`=:apnsToken, `status`=:status, `creation_date`=:creationDate, `key_expiration_date`=:keyExpirationDate, `activation_date`=:activationDate, `has_been_process`=:hasBeenProcess WHERE `id`= :id",
             {
               userKey: this.userKey,
               key: this.key,
@@ -88,6 +92,7 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
               model: this.model,
               os: this.os,
               version: this.version,
+              apnsToken: this.apnsToken,
               status: this.status,
               creationDate: Utils.formatDef(this.creationDate),
               keyExpirationDate: Utils.formatDef(this.keyExpirationDate),
@@ -136,6 +141,7 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
       databaseObject.model,
       databaseObject.os,
       databaseObject.version,
+      databaseObject.apns_token,
       databaseObject.status,
       dayjs(databaseObject.creation_date),
       dayjs(databaseObject.key_expiration_date),
@@ -156,6 +162,7 @@ export default class UserDeviceEntity extends MysqlAbstractEntity<boolean> {
       model: this.model,
       os: this.os,
       version: this.version,
+      apnsToken: this.apnsToken,
       status: this.status,
       creationDate: Utils.formatDef(this.creationDate),
       keyExpirationDate: Utils.formatDef(this.keyExpirationDate),

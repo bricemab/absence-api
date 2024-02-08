@@ -1,6 +1,7 @@
 import {ScannerLogsType} from "../scannerLogs/ScannerLogsType";
 import {UserDevicesStatus} from "../userDevices/UserDevicesTypes";
 import { ActionLogTypes } from "../logs/logsType";
+import { Dayjs } from "dayjs";
 
 export interface DataBaseApiClient {
     id: number;
@@ -14,6 +15,25 @@ export interface DataBaseClient {
     id: number;
     key: string;
     name: string;
+}
+
+export interface DatabaseCertificate {
+  id: number;
+  name: string;
+  key: string;
+  user_key: string;
+  from_date: string;
+  to_date: string;
+  client_key: string;
+  creator_api_client_id: number;
+  is_active: number;
+}
+export interface DatabaseCertificateTimeslot {
+  id: number;
+  certificate_id: number;
+  week_day: number;
+  start_hours: string;
+  end_hours: string;
 }
 
 export interface DatabaseLog {
@@ -52,6 +72,7 @@ export interface DatabaseUserDevice {
     model: string | null;
     os: string | null;
     version: string | null;
+    apns_token: string | null;
     status: UserDevicesStatus;
     creation_date: string;
     key_expiration_date: string;

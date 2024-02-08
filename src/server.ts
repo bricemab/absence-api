@@ -1,23 +1,22 @@
-import fs from "fs";
-import path from "path";
-import morgan from "morgan";
 import bodyParser from "body-parser";
 import cors from "cors";
-import {Request, Response} from "express";
-const express = require("express");
-import {createPool, QueryError, RowDataPacket} from "mysql2";
-import mariadb from "mariadb";
+import { Request, Response } from "express";
+import { createPool, QueryError, RowDataPacket } from "mysql2";
 
 import config from "./config/config";
-import Utils from "./utils/Utils";
 import GlobalStore from "./utils/GlobalStore";
 import Logger from "./utils/Logger";
 import AppUsersRouter from "./routes/app/UsersRouter";
 import ApiUsersRouter from "./routes/api/UsersRouter";
 import TokenManager from "./modules/Global/TokenManager";
-import RequestManager from "./modules/Global/RequestManager";
-import { ApplicationRequest } from "./utils/Types";
 import { GeneralErrors } from "./modules/Global/BackendErrors";
+import { FirebaseSendMessage, FirebaseSendMessageType } from "./services/Firebase/FirebaseAdmin";
+import { FirebaseNotificationCode } from "./utils/Types";
+import AppCertificatesRouter from "./routes/app/CertificatesRouter";
+import ApiCertificatesRouter from "./routes/api/CertificatesRouter";
+
+const express = require("express");
+
 
 const app = express();
 const setup = async () => {
@@ -39,6 +38,31 @@ const setup = async () => {
   app.use(bodyParser.json({limit: "50mb"}));
   app.use(cors());
   app.set("trust proxy", 1);
+  app.get("/push", async (req: Request, res: Response) => {
+    const payload: FirebaseSendMessageType = {
+      notification: {
+        title: 'asfasfasfas',
+        body: 'Votre message ici'
+      },
+      data: {
+        code: FirebaseNotificationCode.REMOVE_DEVICE,
+        cle1: 'valeur1',
+        cle2: 'valeur2',
+      },
+      android: {
+        priority: 'high',
+      },
+      apns: {
+        headers: {
+          'apns-priority': '10',
+        },
+      },
+      token: "fu5t9UtOTwWAHHRDGteEaR:APA91bG3aR7tSl8tkCz63pIvLBk69lsglt48FXjgOeNX6NquGRdsItACAwrOpaRllqrVg5Nl5FRmR3JWSKHE2V6bQ6PUuKmK7_4GQctTcsGCJu94aXvlwfDs5HGcikqSWUu2IbOEitbl",
+    };
+
+    await FirebaseSendMessage(payload);
+    res.send({});
+  })
   app.use(TokenManager.buildSessionToken);
 
   const pool = await createPool({
@@ -71,7 +95,9 @@ setup().then(() => {
   Logger.verbose(`Binding routes`);
 
   app.use("/users", AppUsersRouter);
+  app.use("/certificates", AppCertificatesRouter);
   app.use("/api/users", ApiUsersRouter);
+  app.use("/api/certificates", ApiCertificatesRouter);
   app.get("*", (req: Request, res: Response) => {
     res.status(404);
     res.json({

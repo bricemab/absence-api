@@ -35,6 +35,7 @@ export default class AclManager {
     let hasPermission = false;
     if (!tokenDecryptedData) return false;
     const userRole = tokenDecryptedData.role ?? UserRole.USER_ANONYMOUS;
+    // @ts-ignore
     const rolesPermissions = RolesPermissions[userRole];
     if (permission && permission.includes("specialState.")) {
       switch (permission) {
@@ -54,7 +55,7 @@ export default class AclManager {
         console.error(rolesPermissions);
         return false;
       }
-      rolesPermissions.map(rolePermission => {
+      rolesPermissions.map((rolePermission: string | { [s: string]: unknown; } | ArrayLike<unknown>) => {
         if (typeof rolePermission === "object") {
           if (Object.values(rolePermission).includes(permission)) hasPermission = true;
         } else if (rolePermission === permission) hasPermission = true;
