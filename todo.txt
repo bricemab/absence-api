@@ -3,4 +3,5 @@ OK - faire un loader qui se lance sur l appli quand on arrive sur la page de Hom
 OK - enregistrer le certificates dans le localstorage et le charger a partir de la si on a pas la connexion
 OK - faire l'algo pour generer les qrcode
  - mettre un bandeau pour dire qu'on est pas connecté a internet
-
+ - ajouter a to_date dans la table certificat, la date a 23:59:59
+ - envoyer en reponse la key du certificat sur la route pour le créer
