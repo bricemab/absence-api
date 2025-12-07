@@ -15,6 +15,8 @@ import { FirebaseNotificationCode } from "./utils/Types";
 import AppCertificatesRouter from "./routes/app/CertificatesRouter";
 import ApiCertificatesRouter from "./routes/api/CertificatesRouter";
 
+const STRIPE_API = "aadffasd"
+
 const express = require("express");
 
 
